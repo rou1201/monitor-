@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>RTP 監控中心 | Y董團隊</title>
+    <style>
+        :root { --gold: #d4af37; --neon: #bc13fe; --bg: #050505; }
+        body, html { margin: 0; padding: 0; background: var(--bg); color: #fff; font-family: sans-serif; overflow: hidden; }
+        #canvas { position: fixed; top: 0; left: 0; z-index: -1; }
+        .main { max-width: 450px; margin: 0 auto; padding: 40px 20px; height: 100vh; overflow-y: auto; }
+        header { text-align: center; margin-bottom: 30px; }
+        h1 { color: var(--gold); letter-spacing: 5px; font-size: 1.5rem; text-shadow: 0 0 10px rgba(212,175,55,0.5); }
+        .card { background: rgba(255,255,255,0.03); backdrop-filter: blur(10px); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 20px; margin-bottom: 15px; display: flex; justify-content: space-between; align-items: center; position: relative; }
+        .hot { border: 1px solid var(--neon); animation: glow 3s infinite; }
+        @keyframes glow { 0%, 100% { box-shadow: 0 0 5px var(--neon); } 50% { box-shadow: 0 0 20px var(--neon); } }
+        .rtp { font-size: 1.6rem; font-weight: bold; color: var(--gold); }
+        .blur { filter: blur(10px); opacity: 0.2; }
+        .lock { position: absolute; width: 100%; height: 100%; top: 0; left: 0; display: flex; justify-content: center; align-items: center; cursor: pointer; color: var(--gold); font-weight: bold; z-index: 10; }
+        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.9); z-index: 100; justify-content: center; align-items: center; }
+        .modal-box { background: #111; border: 1px solid var(--gold); padding: 30px; border-radius: 25px; text-align: center; width: 80%; }
+        .btn { display: block; padding: 15px; border-radius: 12px; text-decoration: none; font-weight: bold; margin: 10px 0; }
+        .line { background: #06C755; color: #fff; }
+        .ig { background: linear-gradient(45deg, #f09433, #bc1888); color: #fff; }
+        footer { margin-top: 30px; text-align: center; opacity: 0.5; font-size: 0.7rem; color: #888; }
+    </style>
+</head>
+<body>
+<canvas id="canvas"></canvas>
+<div class="main">
+    <header><h1>SYSTEM MONITOR</h1><p style="color:var(--neon); font-size:0.7rem; letter-spacing:2px;">技術負責人：Y董</p></header>
+    <div class="card hot"><div><div style="font-size:0.8rem; color:#aaa;">賽特 102 號</div><div style="font-size:0.6rem; color:var(--gold);">LIVE DATA</div></div><div class="rtp">98.4%</div></div>
+    <div class="card"><div class="blur"><div style="font-size:0.8rem;">賽特 108 號</div><div class="rtp">99.9%</div></div><div class="lock" onclick="openM()">🔒 點擊解鎖密鑰房間</div></div>
+    <footer><p>本系統由 <span style="color:var(--gold);">Y董團隊</span> 技術支援，數據僅供參考。</p><p>AUTHOR: ROU</p></footer>
+</div>
+<div id="m" class="modal"><div class="modal-box"><h3 style="color:var(--gold);">密鑰驗證</h3><p style="color:#aaa; font-size:0.8rem;">數據受限，請聯繫 <strong>Y董</strong> 獲取密鑰。</p>
+<a href="YOUR_LINE_URL" class="btn line">Line 領取密鑰</a><a href="YOUR_IG_URL" class="btn ig">私訊 IG：y董</a>
+<span onclick="closeM()" style="color:#444; font-size:0.7rem; cursor:pointer;">返回</span></div></div>
+<script>
+    const c=document.getElementById('canvas'),x=c.getContext('2d');let s=[];
+    function init(){c.width=window.innerWidth;c.height=window.innerHeight;s=[];for(let i=0;i<120;i++)s.push({x:Math.random()*c.width,y:Math.random()*c.height,z:Math.random()*c.width});}
+    function draw(){x.clearRect(0,0,c.width,c.height);s.forEach(p=>{let a=(p.x-c.width/2)*(c.width/p.z)+c.width/2,b=(p.y-c.height/2)*(c.width/p.z)+c.height/2,z=(1-p.z/c.width)*2;x.fillStyle="rgba(255,255,255,"+(1-p.z/c.width)+")";x.beginPath();x.arc(a,b,z,0,Math.PI*2);x.fill();p.z-=1.5;if(p.z<=0)p.z=c.width;});requestAnimationFrame(draw);}
+    window.addEventListener('resize',init);init();draw();
+    function openM(){document.getElementById('m').style.display='flex';}
+    function closeM(){document.getElementById('m').style.display='none';}
+</script>
+</body>
+</html>
