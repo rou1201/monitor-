@@ -9,14 +9,14 @@
             --gold: #d4af37;
             --neon-purple: #bc13fe;
             --bg-dark: #050505;
-            --card-bg: rgba(255, 255, 255, 0.03);
+            --card-bg: rgba(255, 255, 255, 0.05);
         }
 
         body, html {
             margin: 0; padding: 0;
             background-color: var(--bg-dark);
             color: #fff;
-            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif;
+            font-family: 'Segoe UI', 'PingFang TC', sans-serif;
             overflow: hidden;
         }
 
@@ -27,7 +27,7 @@
         }
 
         .main-container {
-            max-width: 450px;
+            max-width: 480px;
             margin: 0 auto;
             padding: 40px 20px;
             height: 100vh;
@@ -39,21 +39,21 @@
 
         header {
             text-align: center;
-            margin-bottom: 35px;
+            margin-bottom: 40px;
         }
 
         header h1 {
             color: var(--gold);
-            font-size: 1.5rem;
+            font-size: 1.6rem;
             letter-spacing: 5px;
-            text-shadow: 0 0 10px rgba(212, 175, 55, 0.4);
+            text-shadow: 0 0 10px rgba(212, 175, 55, 0.5);
             margin: 0;
         }
 
         .status-bar {
-            font-size: 0.7rem;
+            font-size: 0.75rem;
             color: var(--neon-purple);
-            margin-top: 10px;
+            margin-top: 12px;
             display: flex;
             justify-content: center;
             align-items: center;
@@ -61,10 +61,10 @@
         }
 
         .live-dot {
-            width: 6px; height: 6px;
+            width: 7px; height: 7px;
             background-color: #00ff00;
             border-radius: 50%;
-            box-shadow: 0 0 5px #00ff00;
+            box-shadow: 0 0 8px #00ff00;
             animation: pulse 1.5s infinite;
         }
 
@@ -72,34 +72,35 @@
 
         .rtp-card {
             background: var(--card-bg);
-            backdrop-filter: blur(12px);
+            backdrop-filter: blur(15px);
             border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 20px;
+            border-radius: 18px;
             padding: 22px;
             margin-bottom: 18px;
             display: flex;
             justify-content: space-between;
             align-items: center;
             position: relative;
-            transition: 0.3s;
         }
 
-        .hot-room {
+        .hot-glow {
             border: 1px solid var(--neon-purple);
-            animation: neon-breathe 4s infinite ease-in-out;
+            animation: breathe 4s infinite ease-in-out;
         }
 
-        @keyframes neon-breathe {
-            0%, 100% { box-shadow: 0 0 5px var(--neon-purple); border-color: rgba(188, 19, 254, 0.3); }
-            50% { box-shadow: 0 0 20px var(--neon-purple); border-color: rgba(188, 19, 254, 0.8); }
+        @keyframes breathe {
+            0%, 100% { box-shadow: 0 0 5px var(--neon-purple); }
+            50% { box-shadow: 0 0 20px var(--neon-purple); }
         }
 
-        .room-info .name { font-size: 0.85rem; color: #bbb; }
+        .room-info .name { font-size: 0.9rem; color: #ddd; font-weight: bold; }
+        .room-info .tag { font-size: 0.65rem; color: var(--gold); margin-top: 5px; letter-spacing: 1px; }
+
         .rtp-number { font-size: 1.7rem; font-weight: 800; color: var(--gold); }
 
-        .blurred { filter: blur(10px); opacity: 0.2; user-select: none; }
+        .blurred { filter: blur(12px); opacity: 0.2; user-select: none; }
         
-        .unlock-trigger {
+        .unlock-btn {
             position: absolute;
             top: 0; left: 0; width: 100%; height: 100%;
             display: flex;
@@ -107,7 +108,10 @@
             align-items: center;
             z-index: 10;
             cursor: pointer;
-            border-radius: 20px;
+            color: var(--gold);
+            font-weight: bold;
+            font-size: 1rem;
+            text-shadow: 0 0 10px #000;
         }
 
         .modal {
@@ -124,21 +128,20 @@
             background: #0d0d0d;
             border: 1px solid var(--gold);
             width: 85%;
-            max-width: 320px;
-            padding: 30px;
+            max-width: 340px;
+            padding: 35px 25px;
             border-radius: 25px;
             text-align: center;
-            box-shadow: 0 0 30px rgba(212, 175, 55, 0.2);
         }
 
         .modal-btn {
             display: block;
             padding: 16px;
-            border-radius: 12px;
+            border-radius: 14px;
             text-decoration: none;
             font-weight: bold;
-            margin: 12px 0;
-            font-size: 0.95rem;
+            margin: 15px 0;
+            font-size: 1rem;
         }
 
         .line-btn { background: #06C755; color: #fff; }
@@ -146,9 +149,10 @@
 
         footer {
             margin-top: 40px;
-            padding-bottom: 40px;
+            padding-bottom: 50px;
             text-align: center;
-            opacity: 0.5;
+            opacity: 0.4;
+            font-size: 0.75rem;
         }
     </style>
 </head>
@@ -158,68 +162,74 @@
 
 <div class="main-container">
     <header>
-        <h1>SYSTEM MONITOR</h1>
+        <h1>Y董．實時監控</h1>
         <div class="status-bar">
             <div class="live-dot"></div>
-            <span>SERVER ONLINE | 數據對接中</span>
+            <span>SERVER ACTIVE | 數據分析中</span>
         </div>
     </header>
 
-    <div class="rtp-card hot-room">
-        <div class="room-info">
-            <div class="name">賽特 102 號</div>
-            <div style="color: var(--gold); font-size: 0.6rem; border: 1px solid var(--gold); display: inline-block; padding: 1px 4px; border-radius: 3px; margin-top: 4px;">HIGH VOLATILITY</div>
-        </div>
-        <div class="rtp-number">98.4%</div>
-    </div>
-
-    <div class="rtp-card" style="cursor: pointer;">
-        <div class="room-info blurred">
-            <div class="name">賽特 108 號</div>
-            <div style="color: var(--gold); font-size: 0.6rem;">SECURED DATA</div>
-        </div>
-        <div class="rtp-number blurred">99.9%</div>
-        <div class="unlock-trigger" onclick="openModal()">
-            <span style="color: var(--gold); font-size: 0.9rem; font-weight: bold; text-shadow: 0 0 10px #000;">🔒 解鎖密鑰房間</span>
-        </div>
-    </div>
+    <div id="room-list"></div>
 
     <footer>
-        <p style="font-size: 0.75rem; color: #888;">本系統由 <span style="color: var(--gold);">Y董團隊</span> 技術支援，數據僅供參考。</p>
+        <p>本系統由 <span style="color: var(--gold);">Y董團隊</span> 技術支援，數據僅供參考。</p>
     </footer>
 </div>
 
 <div id="modal" class="modal">
     <div class="modal-box">
-        <h3 style="color: var(--gold); margin-bottom: 15px; letter-spacing: 2px;">密鑰驗證</h3>
-        <p style="color: #aaa; font-size: 0.85rem; line-height: 1.6;">
-            該房間數據受權限保護。<br>請聯繫負責人 <strong>Y董</strong> 領取密鑰。
+        <h3 style="color: var(--gold); letter-spacing: 2px;">權限驗證</h3>
+        <p style="color: #aaa; font-size: 0.9rem; line-height: 1.6;">
+            該房間數據受權限保護。<br>請聯繫 <strong>Y董</strong> 領取密鑰。
         </p>
-        <div style="margin: 25px 0;">
-            <a href="https://reurl.cc/nlOQ5X" class="modal-btn line-btn">領取 Line 解鎖密鑰</a>
-            <a href="https://www.instagram.com/agg.8989?igsh=aXI3NnExazNpYm1p&utm_source=qr" class="modal-btn ig-btn">私訊 IG：y董</a>
+        <div style="margin-top: 30px;">
+            <a href="https://reurl.cc/nlOQ5X" class="modal-btn line-btn" target="_blank">領取 Line 解鎖密鑰</a>
+            <a href="https://www.instagram.com/agg.8989?igsh=aXI3NnExazNpYm1p&utm_source=qr" class="modal-btn ig-btn" target="_blank">私訊 IG：y董</a>
         </div>
-        <span onclick="closeModal()" style="color: #444; font-size: 0.75rem; cursor: pointer;">返回監控首頁</span>
+        <span onclick="toggleModal(false)" style="color: #444; font-size: 0.8rem; cursor: pointer; display: block; margin-top: 15px;">返回監控</span>
     </div>
 </div>
 
 <script>
+    // 隨機房間邏輯
+    function generateDynamicRooms() {
+        const container = document.getElementById('room-list');
+        // 隨機生成 5-10 個卡片
+        const count = Math.floor(Math.random() * 6) + 5; 
+        
+        // 從 101 到 500 隨機挑選不重複的房間號
+        const roomPool = Array.from({length: 400}, (_, i) => i + 101).sort(() => Math.random() - 0.5);
+        
+        let html = '';
+        for (let i = 0; i < count; i++) {
+            // RTP 範圍 80.0 - 94.3
+            const rtp = (Math.random() * (94.3 - 80) + 80).toFixed(1);
+            const isLocked = i >= 2; // 前兩組展示，其餘鎖定
+            
+            html += `
+                <div class="rtp-card ${!isLocked ? 'hot-glow' : ''}">
+                    <div class="room-info ${isLocked ? 'blurred' : ''}">
+                        <div class="name">RSG - 賽特 ${roomPool[i]} 號</div>
+                        <div class="tag">${isLocked ? 'SECURED DATA' : '🔥 LIVE SIGNAL'}</div>
+                    </div>
+                    <div class="rtp-number ${isLocked ? 'blurred' : ''}">${rtp}%</div>
+                    ${isLocked ? `<div class="unlock-btn" onclick="toggleModal(true)">🔒 點擊解鎖密鑰房間</div>` : ''}
+                </div>
+            `;
+        }
+        container.innerHTML = html;
+    }
+
+    // 星空引擎
     const canvas = document.getElementById('starfield');
     const ctx = canvas.getContext('2d');
     let stars = [];
-    function init() {
-        canvas.width = window.innerWidth;
-        canvas.height = window.innerHeight;
+    function initStars() {
+        canvas.width = window.innerWidth; canvas.height = window.innerHeight;
         stars = [];
-        for(let i=0; i<120; i++) {
-            stars.push({
-                x: Math.random()*canvas.width,
-                y: Math.random()*canvas.height,
-                z: Math.random()*canvas.width
-            });
-        }
+        for(let i=0; i<100; i++) stars.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, z: Math.random()*canvas.width});
     }
-    function move() {
+    function updateStars() {
         ctx.clearRect(0,0,canvas.width,canvas.height);
         stars.forEach(s => {
             let x = (s.x - canvas.width/2) * (canvas.width/s.z) + canvas.width/2;
@@ -229,12 +239,15 @@
             ctx.beginPath(); ctx.arc(x,y,sz,0,Math.PI*2); ctx.fill();
             s.z -= 1.2; if(s.z<=0) s.z = canvas.width;
         });
-        requestAnimationFrame(move);
+        requestAnimationFrame(updateStars);
     }
-    window.addEventListener('resize', init);
-    init(); move();
-    function openModal() { document.getElementById('modal').style.display = 'flex'; }
-    function closeModal() { document.getElementById('modal').style.display = 'none'; }
+
+    function toggleModal(show) { document.getElementById('modal').style.display = show ? 'flex' : 'none'; }
+    window.addEventListener('resize', initStars);
+    initStars(); updateStars(); 
+    
+    // 初始化生成
+    generateDynamicRooms();
 </script>
 </body>
 </html>
