@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>RTP 實時監控系統 | Y董團隊</title>
+    <title>ATG RTP 實時監控系統 | Y董團隊</title>
     <style>
         :root {
             --gold: #d4af37;
@@ -44,7 +44,7 @@
 <canvas id="canvas"></canvas>
 <div class="wrapper">
     <header>
-        <h1>Y董．實時監控</h1>
+        <h1>Y董．ATG 監控</h1>
         <div class="status"><div class="dot"></div><span>SERVER ACTIVE | RTP 數據對接中</span></div>
     </header>
     <div id="list"></div>
@@ -74,7 +74,7 @@
             h += `
                 <div class="card ${!lock ? 'glow' : ''}">
                     <div class="info ${lock ? 'blur' : ''}">
-                        <div class="name">RSG - 賽特 ${p[i]} 號</div>
+                        <div class="name">ATG - 賽特 ${p[i]} 號</div>
                         <div class="label">RTP 實時監控</div>
                     </div>
                     <div class="val ${lock ? 'blur' : ''}">${r}%</div>
