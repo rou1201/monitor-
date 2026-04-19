@@ -10,7 +10,7 @@
     <style>
         :root {
             --bg: #030308;
-            --panel: rgba(8, 8, 20, 0.95);
+            --panel: rgba(10, 10, 25, 0.98);
             --gold: #d4af37;
             --s1: #ff0055; --s2: #ff5e00; --s3: #cc00ff; --s4: #00ccff; --s5: #00ffaa;
         }
@@ -25,7 +25,7 @@
 
         body::after {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.15) 50%);
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
             background-size: 100% 4px; z-index: 10; pointer-events: none;
         }
 
@@ -36,29 +36,28 @@
         }
 
         header { 
-            text-align: center; margin-bottom: 20px; 
-            border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px;
+            text-align: center; margin-bottom: 25px; 
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 20px;
         }
-        h1 { font-size: 1.3rem; letter-spacing: 3px; color: var(--gold); margin: 0; font-weight: 900; }
-        .status { font-size: 0.7rem; color: #fff; margin-top: 8px; opacity: 0.8; letter-spacing: 1px; }
+        h1 { font-size: 1.4rem; letter-spacing: 4px; color: var(--gold); margin: 0; font-weight: 900; }
 
         #list { flex: 1; overflow-y: auto; scrollbar-width: none; }
         #list::-webkit-scrollbar { display: none; }
 
         .card {
             background: var(--panel); 
-            backdrop-filter: blur(15px);
+            backdrop-filter: blur(20px);
             border: 1px solid rgba(255, 255, 255, 0.05);
-            border-left: 4px solid #333;
-            margin-bottom: 15px; padding: 18px 22px;
+            border-left: 5px solid #333;
+            margin-bottom: 15px; padding: 20px;
             display: flex; justify-content: space-between; align-items: center;
-            position: relative; transition: all 0.5s ease;
-            clip-path: polygon(0% 0%, 100% 0%, 100% 85%, 94% 100%, 0% 100%);
+            position: relative;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 85%, 95% 100%, 0% 100%);
         }
 
-        .info .id-text { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
-        .info .tag { font-size: 0.9rem; font-weight: 900; letter-spacing: 1px; }
-        .val { font-size: 2.1rem; font-weight: 900; font-family: 'Consolas', monospace; }
+        .info .id-text { font-size: 0.75rem; color: rgba(255,255,255,0.4); margin-bottom: 5px; font-family: monospace; letter-spacing: 1px; }
+        .info .tag { font-size: 0.95rem; font-weight: 900; letter-spacing: 1px; }
+        .val { font-size: 2.2rem; font-weight: 900; font-family: 'Arial Black', sans-serif; }
 
         .state-1 { border-left-color: var(--s1); } .state-1 .val, .state-1 .tag { color: var(--s1); text-shadow: 0 0 10px var(--s1); }
         .state-2 { border-left-color: var(--s2); } .state-2 .val, .state-2 .tag { color: var(--s2); }
@@ -68,29 +67,29 @@
 
         .lock-mask {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(5,5,10,0.95); display: flex; justify-content: center; align-items: center;
+            background: rgba(5,5,15,0.98); display: flex; justify-content: center; align-items: center;
             z-index: 20; cursor: pointer;
         }
         .lock-btn {
-            border: 1px solid var(--gold); color: var(--gold); padding: 8px 25px;
-            font-size: 0.85rem; font-weight: 900; letter-spacing: 2px;
-            background: rgba(0,0,0,0.5);
+            border: 1px solid var(--gold); color: var(--gold); padding: 10px 30px;
+            font-size: 0.9rem; font-weight: 900; letter-spacing: 2px;
+            background: rgba(212, 175, 55, 0.1);
         }
-        .blur-content { filter: blur(15px); opacity: 0.1; }
+        .blur-content { filter: blur(15px); opacity: 0.05; }
 
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background: rgba(0,0,0,0.98); z-index: 100; justify-content: center; align-items: center;
         }
         .m-box { 
-            background: #050508; border: 1px solid var(--gold); width: 85%; max-width: 320px; padding: 45px 25px; 
+            background: #080810; border: 1px solid var(--gold); width: 85%; max-width: 320px; padding: 40px 25px; 
             text-align: center; clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
         }
-        .btn { display: block; padding: 15px; margin: 15px 0; text-decoration: none; font-weight: 900; font-size: 1rem; border-radius: 4px; border: none; cursor: pointer; width: 100%; box-sizing: border-box;}
+        .btn { display: block; padding: 16px; margin: 15px 0; text-decoration: none; font-weight: 900; font-size: 1rem; border-radius: 4px; }
         .btn-l { background: #06C755; color: #fff; }
         .btn-i { background: linear-gradient(45deg, #f09433, #e6683c, #dc2743, #cc2366, #bc1888); color: #fff; }
 
-        footer { text-align: center; padding: 20px; font-size: 0.65rem; color: rgba(255,255,255,0.2); letter-spacing: 1px; }
+        footer { text-align: center; padding: 20px; font-size: 0.7rem; color: rgba(255,255,255,0.1); letter-spacing: 1px; }
     </style>
 </head>
 <body>
@@ -100,7 +99,6 @@
 <div class="wrapper">
     <header>
         <h1>戰神賽特．智能監控</h1>
-        <div class="status">系統狀態：數據漫遊中 // 全域掃描 1-5000</div>
     </header>
 
     <div id="list"></div>
@@ -111,10 +109,10 @@
 <div id="m" class="modal">
     <div class="m-box">
         <h2 style="color:var(--gold); font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 2px;">存取權限受限</h2>
-        <p style="color:#666; font-size:0.8rem; margin-bottom:30px; line-height:1.6;">該監測對象已加密<br>請聯繫 Y董 獲取永久解鎖密鑰</p>
-        <a href="https://reurl.cc/nlOQ5X" class="btn btn-l" target="_blank" rel="noopener noreferrer">LINE 領取密鑰</a>
-        <a href="https://www.instagram.com/agg.8989" class="btn btn-i" target="_blank" rel="noopener noreferrer">私訊 IG 聯繫</a>
-        <span onclick="toggleM(false)" style="color:#333; cursor:pointer; font-size:0.75rem; display:block; margin-top:20px;">[ 返回監控界面 ]</span>
+        <p style="color:#666; font-size:0.8rem; margin-bottom:30px; line-height:1.6;">該房號數據已由密鑰加密<br>請聯繫 Y董 獲取永久解鎖權限</p>
+        <a href="https://reurl.cc/nlOQ5X" class="btn btn-l" target="_blank">LINE 申請密鑰</a>
+        <a href="https://www.instagram.com/agg.8989" class="btn btn-i" target="_blank">私訊 IG 管理員</a>
+        <span onclick="toggleM(false)" style="color:#222; cursor:pointer; font-size:0.75rem; display:block; margin-top:20px;">[ 返回監控界面 ]</span>
     </div>
 </div>
 
@@ -125,20 +123,8 @@
         const canvas = document.getElementById('bg-canvas');
         const ctx = canvas.getContext('2d');
         
-        let data = [];
-
         function getRandomRoom() { return Math.floor(Math.random() * 5000) + 1; }
-
-        function initData() {
-            data = [];
-            for(let i=0; i<10; i++) {
-                data.push({
-                    id: getRandomRoom(),
-                    rtp: (Math.random() * (94 - 61) + 61).toFixed(1),
-                    lock: i >= 5
-                });
-            }
-        }
+        function getRandomRTP() { return (Math.random() * (95 - 60) + 60).toFixed(1); }
 
         function getS(v) {
             const n = parseFloat(v);
@@ -149,68 +135,41 @@
             return { s: 'state-5', t: '高度活躍' };
         }
 
-        function draw() {
-            list.innerHTML = data.map(r => {
-                const info = getS(r.rtp);
-                return `
-                    <div class="card ${info.s}" id="card-${r.id}">
-                        <div class="info ${r.lock ? 'blur-content' : ''}">
-                            <div class="id-text" id="id-text-${r.id}">監測編號：${r.id}</div>
+        // 強制刷新全列表房號與數值
+        function refreshList() {
+            let html = '';
+            for(let i=0; i<10; i++) {
+                const id = getRandomRoom();
+                const rtp = getRandomRTP();
+                const isLocked = i >= 5;
+                const info = getS(rtp);
+                
+                html += `
+                    <div class="card ${info.s}">
+                        <div class="info ${isLocked ? 'blur-content' : ''}">
+                            <div class="id-text">監測編號：${id}</div>
                             <div class="tag">${info.t}</div>
                         </div>
-                        <div class="val ${r.lock ? 'blur-content' : ''}" id="v-${r.id}">${r.rtp}%</div>
-                        ${r.lock ? `<div class="lock-mask" onclick="toggleM(true)"><div class="lock-btn">點擊解鎖</div></div>` : ''}
+                        <div class="val ${isLocked ? 'blur-content' : ''}">${rtp}%</div>
+                        ${isLocked ? `<div class="lock-mask" onclick="toggleM(true)"><div class="lock-btn">點擊解鎖</div></div>` : ''}
                     </div>`;
-            }).join('');
+            }
+            list.innerHTML = html;
         }
 
-        function sync() {
-            data.forEach(r => {
-                if(!r.lock) {
-                    // 隨機數值飄移
-                    r.rtp = Math.min(98.5, Math.max(58, parseFloat(r.rtp) + (Math.random() * 0.6 - 0.3))).toFixed(1);
-                    const el = document.getElementById(`v-${r.id}`);
-                    const card = document.getElementById(`card-${r.id}`);
-                    if(el && card) {
-                        el.innerText = r.rtp + '%';
-                        const next = getS(r.rtp);
-                        card.className = `card ${next.s}`;
-                        card.querySelector('.tag').innerText = next.t;
-                    }
-                }
-                
-                // 模擬系統隨機切換監測目標 (10% 機率切換房號)
-                if(Math.random() > 0.98) {
-                    const oldId = r.id;
-                    const newId = getRandomRoom();
-                    r.id = newId;
-                    const idTxt = document.getElementById(`id-text-${oldId}`);
-                    if(idTxt) {
-                        idTxt.id = `id-text-${newId}`;
-                        idTxt.innerText = `監測編號：${newId}`;
-                    }
-                }
-            });
-        }
-
-        let particles = [];
+        let pts = [];
         function initBg() {
             canvas.width = window.innerWidth; canvas.height = window.innerHeight;
-            particles = [];
-            for(let i=0; i<40; i++) particles.push({
-                x: Math.random() * canvas.width, y: Math.random() * canvas.height,
-                h: Math.random() * 60 + 20, v: Math.random() * 1.2 + 0.3,
-                color: i % 2 === 0 ? '#d4af37' : '#ff0055'
-            });
+            pts = [];
+            for(let i=0; i<30; i++) pts.push({x: Math.random()*canvas.width, y: Math.random()*canvas.height, s: Math.random()*2+0.5});
         }
-
         function drawBg() {
-            ctx.fillStyle = 'rgba(3, 3, 8, 0.2)';
-            ctx.fillRect(0, 0, canvas.width, canvas.height);
-            particles.forEach(p => {
-                ctx.beginPath(); ctx.strokeStyle = p.color; ctx.globalAlpha = 0.08;
-                ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y + p.h); ctx.stroke();
-                p.y -= p.v; if(p.y + p.h < 0) p.y = canvas.height;
+            ctx.fillStyle = 'rgba(3,3,8,0.3)'; ctx.fillRect(0,0,canvas.width,canvas.height);
+            pts.forEach(p => {
+                ctx.fillStyle = Math.random() > 0.5 ? '#d4af37' : '#ff0055';
+                ctx.globalAlpha = 0.1;
+                ctx.fillRect(p.x, p.y, 1, 40);
+                p.y -= p.s; if(p.y < -40) p.y = canvas.height;
             });
             requestAnimationFrame(drawBg);
         }
@@ -218,8 +177,10 @@
         window.toggleM = (s) => modal.style.display = s ? 'flex' : 'none';
         window.addEventListener('resize', initBg);
         
-        initBg(); drawBg(); initData(); draw();
-        setInterval(sync, 250);
+        initBg(); drawBg();
+        refreshList();
+        // 設定每 0.4 秒全列表房號「大跳轉」
+        setInterval(refreshList, 400);
     })();
 </script>
 </body>
