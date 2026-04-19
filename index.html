@@ -6,150 +6,189 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ATG NEURAL LINK | Y董團隊</title>
+    <title>ATG 監控系統 | 柔</title>
     <style>
-        :root { 
-            --bg-dark: #050508;
-            --panel-bg: rgba(10, 10, 15, 0.9);
+        :root {
+            --bg: #010105;
+            --panel: rgba(10, 10, 25, 0.9);
             --gold: #d4af37;
-            /* 5 態科技感配色 */
-            --s1: #ff0055; /* 極低 - 桃紅 */
-            --s2: #ff7700; /* 低迷 - 橙 */
-            --s3: #cc00ff; /* 普通 - 紫 */
-            --s4: #0088ff; /* 回升 - 藍 */
-            --s5: #00ffcc; /* 活躍 - 螢光綠 */
+            /* 五態科技配色固化 */
+            --s1: #ff0055; /* 極度危險 */
+            --s2: #ff5e00; /* 數據低迷 */
+            --s3: #cc00ff; /* 正常波動 */
+            --s4: #00ccff; /* 數據回升 */
+            --s5: #00ffaa; /* 高度活躍 */
         }
-        
-        body, html { margin: 0; padding: 0; background: var(--bg-dark); color: #fff; font-family: 'Consolas', 'PingFang TC', sans-serif; overflow: hidden; height: 100%; }
-        
-        /* 掃描線特效 */
+
+        body, html {
+            margin: 0; padding: 0; background: var(--bg); color: #fff;
+            font-family: 'Segoe UI', 'PingFang TC', sans-serif; overflow: hidden; height: 100%;
+        }
+
+        /* 科技感背景網格 */
+        #grid-bg {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background-image: linear-gradient(rgba(0, 255, 170, 0.03) 1px, transparent 1px),
+                              linear-gradient(90deg, rgba(0, 255, 170, 0.03) 1px, transparent 1px);
+            background-size: 30px 30px; z-index: -1;
+        }
+
+        /* 掃描線效果 */
         body::before {
-            content: " "; display: block; position: absolute; top: 0; left: 0; bottom: 0; right: 0;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.3) 50%), linear-gradient(90deg, rgba(255, 0, 0, 0.05), rgba(0, 255, 0, 0.02), rgba(0, 0, 255, 0.05));
-            z-index: 10; background-size: 100% 3px, 3px 100%; pointer-events: none;
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background-size: 100% 4px; z-index: 10; pointer-events: none;
         }
 
-        #canvas { position: fixed; top: 0; left: 0; z-index: -1; opacity: 0.4; }
-
-        .wrapper { max-width: 480px; margin: 0 auto; padding: 30px 20px; height: 100vh; overflow-y: auto; box-sizing: border-box; scrollbar-width: none; position: relative; z-index: 5; }
-        .wrapper::-webkit-scrollbar { display: none; }
-
-        header { text-align: left; margin-bottom: 30px; border-left: 4px solid var(--gold); padding-left: 15px; }
-        h1 { font-size: 1.3rem; letter-spacing: 3px; color: #fff; margin: 0; text-transform: uppercase; }
-        .status { font-size: 0.6rem; color: var(--gold); margin-top: 5px; letter-spacing: 1px; opacity: 0.8; }
-        
-        /* 賽博切角卡片 */
-        .card { 
-            background: var(--panel-bg); 
-            border: 1px solid rgba(255, 255, 255, 0.1); 
-            margin-bottom: 15px; 
-            padding: 18px; 
-            display: flex; 
-            justify-content: space-between; 
-            align-items: center; 
-            position: relative;
-            clip-path: polygon(0 0, 100% 0, 100% 80%, 95% 100%, 0 100%);
-            transition: all 0.3s ease;
+        .wrapper {
+            max-width: 450px; margin: 0 auto; height: 100vh;
+            display: flex; flex-direction: column; padding: 20px; box-sizing: border-box;
+            position: relative; z-index: 1;
         }
 
-        .info .room-id { font-size: 0.8rem; color: #888; margin-bottom: 4px; font-weight: bold; }
-        .info .state-tag { font-size: 0.65rem; font-weight: 900; letter-spacing: 1px; }
+        header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
+        h1 { font-size: 1.5rem; letter-spacing: 5px; color: var(--gold); margin: 0; text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
+        .status { font-size: 0.65rem; color: #666; margin-top: 8px; letter-spacing: 2px; }
 
-        .val { font-size: 1.8rem; font-weight: 900; transition: all 0.3s; }
+        #list { flex: 1; overflow-y: auto; scrollbar-width: none; }
+        #list::-webkit-scrollbar { display: none; }
 
-        /* 5 態辨識顏色賦值 */
-        .st-1 { border-left: 3px solid var(--s1); } .st-1 .val, .st-1 .state-tag { color: var(--s1); }
-        .st-2 { border-left: 3px solid var(--s2); } .st-2 .val, .st-2 .state-tag { color: var(--s2); }
-        .st-3 { border-left: 3px solid var(--s3); } .st-3 .val, .st-3 .state-tag { color: var(--s3); }
-        .st-4 { border-left: 3px solid var(--s4); } .st-4 .val, .st-4 .state-tag { color: var(--s4); }
-        .st-5 { border-left: 3px solid var(--s5); } .st-5 .val, .st-5 .state-tag { color: var(--s5); text-shadow: 0 0 10px var(--s5); }
-
-        /* 鎖定動態 Hex 遮罩 */
-        .lock-overlay { 
-            position: absolute; top: 0; left: 0; width: 100%; height: 100%; 
-            background: rgba(0, 0, 0, 0.9); z-index: 20;
-            display: flex; flex-direction: column; justify-content: center; align-items: center; 
-            cursor: pointer;
+        /* 卡片切角設計 */
+        .card {
+            background: var(--panel); border-left: 4px solid #333;
+            border-radius: 4px 12px 12px 4px; padding: 15px 20px; margin-bottom: 15px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative; transition: 0.3s;
+            clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
         }
-        .hex-bg { position: absolute; font-size: 0.6rem; color: #111; width: 100%; text-align: center; white-space: nowrap; overflow: hidden; top: 10%; opacity: 0.6; }
-        .lock-btn { border: 1px solid var(--gold); color: var(--gold); padding: 5px 15px; font-size: 0.75rem; font-weight: bold; background: rgba(0,0,0,0.5); z-index: 21; }
+
+        .info .id-text { font-size: 0.75rem; color: #555; margin-bottom: 5px; font-family: monospace; }
+        .info .tag { font-size: 0.8rem; font-weight: 900; letter-spacing: 1px; }
+
+        .val { font-size: 2rem; font-weight: 900; font-family: 'Consolas', monospace; }
+
+        /* 五態樣式渲染 */
+        .state-1 { border-left-color: var(--s1); box-shadow: 0 0 15px rgba(255, 0, 85, 0.1); }
+        .state-1 .val { color: var(--s1); text-shadow: 0 0 8px var(--s1); }
+        .state-1 .tag { color: var(--s1); }
+
+        .state-2 { border-left-color: var(--s2); }
+        .state-2 .val { color: var(--s2); text-shadow: 0 0 8px var(--s2); }
+        .state-2 .tag { color: var(--s2); }
+
+        .state-3 { border-left-color: var(--s3); }
+        .state-3 .val { color: var(--s3); text-shadow: 0 0 8px var(--s3); }
+        .state-3 .tag { color: var(--s3); }
+
+        .state-4 { border-left-color: var(--s4); }
+        .state-4 .val { color: var(--s4); text-shadow: 0 0 8px var(--s4); }
+        .state-4 .tag { color: var(--s4); }
+
+        .state-5 { border-left-color: var(--s5); box-shadow: 0 0 20px rgba(0, 255, 170, 0.15); }
+        .state-5 .val { color: var(--s5); text-shadow: 0 0 12px var(--s5); animation: pulse 1s infinite alternate; }
+        .state-5 .tag { color: var(--s5); }
+
+        @keyframes pulse { from { opacity: 0.7; } to { opacity: 1; } }
+
+        /* 鎖定代碼流遮罩 */
+        .lock-mask {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center;
+            z-index: 20; cursor: pointer; flex-direction: column;
+        }
+        .hex-stream {
+            position: absolute; top: 5px; font-size: 0.6rem; color: #1a1a1a;
+            white-space: nowrap; width: 100%; text-align: center; opacity: 0.5;
+        }
+        .lock-btn {
+            border: 1px solid var(--gold); color: var(--gold); padding: 5px 15px;
+            font-size: 0.8rem; font-weight: bold; background: rgba(0,0,0,0.5);
+            letter-spacing: 2px;
+        }
         .blur-content { filter: blur(10px); opacity: 0.2; }
 
-        /* 彈窗 */
-        .modal { display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.95); z-index: 999; justify-content: center; align-items: center; }
+        /* 彈窗樣式 */
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.96); z-index: 99; justify-content: center; align-items: center;
+        }
         .m-box { 
-            background: #000; border: 1px solid var(--gold); width: 80%; max-width: 320px; padding: 40px 20px; text-align: center;
+            background: #050510; border: 1px solid var(--gold); width: 80%; padding: 35px 25px; 
+            border-radius: 10px; text-align: center; position: relative;
             clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
         }
-        .m-btn { display: block; padding: 15px; text-decoration: none; font-weight: bold; margin: 12px 0; font-size: 0.9rem; text-align: center; }
-        .btn-line { background: #06C755; color: #fff; }
-        .btn-ig { border: 1px solid #ff0055; color: #ff0055; }
+        .btn { display: block; padding: 15px; margin: 15px 0; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+        .btn-l { background: #06C755; color: #fff; }
+        .btn-i { border: 1px solid #ff0055; color: #ff0055; }
 
-        footer { margin-top: 20px; text-align: left; opacity: 0.3; font-size: 0.6rem; letter-spacing: 1px; border-top: 1px solid #222; padding-top: 10px; }
+        footer { text-align: center; padding: 15px; font-size: 0.6rem; color: #333; letter-spacing: 1px; border-top: 1px solid #111; }
     </style>
 </head>
 <body>
-<canvas id="canvas"></canvas>
+
+<div id="grid-bg"></div>
+
 <div class="wrapper">
     <header>
-        <h1>Y-CORP // NEURAL_LINK</h1>
-        <div class="status">DECODING REAL-TIME RTP DATA... [v4.0.2]</div>
+        <h1>ATG 智能監控系統</h1>
+        <div class="status">加密連接通道 // 實時五態數據分析</div>
     </header>
-    
+
     <div id="list"></div>
 
-    <footer>
-        <p>AUTHORED BY 柔 / 去標誌化純淨代碼<br>ENCRYPTED ACCESS ONLY.</p>
-    </footer>
+    <footer>技術支援：Y董團隊 | 數據加密存取</footer>
 </div>
 
 <div id="m" class="modal">
     <div class="m-box">
-        <h3 style="color:var(--gold); margin-bottom:10px; letter-spacing:2px;">ACCESS DENIED</h3>
-        <p style="color:#444; font-size:0.7rem; margin-bottom:30px;">REQUIRED DECRYPTOR KEY NOT FOUND.</p>
-        <a href="https://reurl.cc/nlOQ5X" class="m-btn btn-line" target="_blank">GET DECRYPTOR</a>
-        <a href="https://www.instagram.com/agg.8989?igsh=aXI3NnExazNpYm1p&utm_source=qr" class="m-btn btn-ig" target="_blank">CONTACT ADMIN</a>
-        <span onclick="toggleM(false)" style="color:#222; font-size:0.6rem; cursor:pointer; display:block; margin-top:20px;">[ TERMINATE ]</span>
+        <h2 style="color:var(--gold); font-size: 1.2rem; margin-bottom: 10px;">權限受限</h2>
+        <p style="color:#666; font-size:0.75rem; line-height: 1.6;">該數據通道已由密鑰加密<br>請聯繫管理員獲取永久解碼權限</p>
+        <div style="margin-top: 25px;">
+            <a href="https://reurl.cc/nlOQ5X" class="btn btn-l" target="_blank">LINE 密鑰申請</a>
+            <a href="https://www.instagram.com/agg.8989?igsh=aXI3NnExazNpYm1p&utm_source=qr" class="btn btn-i" target="_blank">IG 私訊聯繫領取</a>
+        </div>
+        <span onclick="toggleM(false)" style="color:#333; cursor:pointer; font-size:0.7rem; display:block; margin-top:15px;">關閉監控視窗</span>
     </div>
 </div>
 
 <script>
     (function() {
-        const listContainer = document.getElementById('list');
+        const list = document.getElementById('list');
         const modal = document.getElementById('m');
         
-        // 生成 10 個房號 (5 開 5 鎖)
-        const rooms = [102, 115, 128, 203, 245, 301, 318, 355, 382, 400].map((id, i) => ({
-            id, rtp: (Math.random() * (93 - 60) + 60).toFixed(1), isLocked: i >= 5
+        // 固化五開五鎖房號
+        const data = [102, 115, 128, 205, 233, 301, 315, 366, 388, 400].map((id, i) => ({
+            id, rtp: (Math.random() * (94 - 60) + 60).toFixed(1), lock: i >= 5
         }));
 
-        function getAnalysis(v) {
+        // 固化五態分析邏輯
+        function getS(v) {
             const n = parseFloat(v);
-            if (n < 65) return { cls: 'st-1', tag: 'CRITICAL_ZONE' };
-            if (n < 73) return { cls: 'st-2', tag: 'DATA_LOW' };
-            if (n < 81) return { cls: 'st-3', tag: 'STABLE_PULSE' };
-            if (n < 88) return { cls: 'st-4', tag: 'REBOUND_MODE' };
-            return { cls: 'st-5', tag: 'MAX_ACTIVITY' };
+            if (n < 65) return { s: 'state-1', t: '極度危險' };
+            if (n < 73) return { s: 'state-2', t: '數據低迷' };
+            if (n < 81) return { s: 'state-3', t: '正常波動' };
+            if (n < 88) return { s: 'state-4', t: '數據回升' };
+            return { s: 'state-5', t: '高度活躍' };
         }
 
         function genHex() {
-            return Array.from({length: 30}, () => Math.floor(Math.random()*16).toString(16).toUpperCase()).join('');
+            return Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16).toUpperCase()).join('');
         }
 
-        function render() {
-            listContainer.innerHTML = rooms.map(r => {
-                const ana = getAnalysis(r.rtp);
+        function draw() {
+            list.innerHTML = data.map(r => {
+                const info = getS(r.rtp);
                 return `
-                    <div class="card ${ana.cls}" id="card-${r.id}">
-                        <div class="info ${r.isLocked ? 'blur-content' : ''}">
-                            <div class="room-id">UNIT_SET-0${r.id}</div>
-                            <div class="state-tag">${ana.tag}</div>
+                    <div class="card ${info.s}" id="card-${r.id}">
+                        <div class="info ${r.lock ? 'blur-content' : ''}">
+                            <div class="id-text">監測編號: ${r.id}</div>
+                            <div class="tag">${info.t}</div>
                         </div>
-                        <div class="val ${r.isLocked ? 'blur-content' : ''}" id="v-${r.id}">${r.rtp}%</div>
-                        ${r.isLocked ? `
-                            <div class="lock-overlay" onclick="toggleM(true)">
-                                <div class="hex-bg" id="hex-${r.id}"></div>
-                                <div class="lock-btn">DECRYPT_DATA</div>
+                        <div class="val ${r.lock ? 'blur-content' : ''}" id="v-${r.id}">${r.rtp}%</div>
+                        ${r.lock ? `
+                            <div class="lock-mask" onclick="toggleM(true)">
+                                <div class="hex-stream" id="h-${r.id}"></div>
+                                <div class="lock-btn">🔒 密鑰解鎖</div>
                             </div>
                         ` : ''}
                     </div>
@@ -158,43 +197,33 @@
         }
 
         function sync() {
-            rooms.forEach(r => {
-                if (!r.isLocked) {
+            data.forEach(r => {
+                if(!r.lock) {
+                    // 模擬真實波動
                     const drift = (Math.random() * 0.4 - 0.2);
-                    r.rtp = Math.min(97, Math.max(55, parseFloat(r.rtp) + drift)).toFixed(1);
-                    const vEl = document.getElementById(`v-${r.id}`);
-                    if (vEl) vEl.innerText = r.rtp + '%';
+                    r.rtp = Math.min(97.5, Math.max(55, parseFloat(r.rtp) + drift)).toFixed(1);
+                    const el = document.getElementById(`v-${r.id}`);
+                    const card = document.getElementById(`card-${r.id}`);
+                    if(el) {
+                        el.innerText = r.rtp + '%';
+                        // 實時更新顏色與狀態
+                        const next = getS(r.rtp);
+                        card.className = `card ${next.s}`;
+                        card.querySelector('.tag').innerText = next.t;
+                    }
                 } else {
-                    const hEl = document.getElementById(`hex-${r.id}`);
-                    if (hEl) hEl.innerText = genHex();
+                    // 更新鎖定房號的動態代碼流
+                    const hEl = document.getElementById(`h-${r.id}`);
+                    if(hEl) hEl.innerText = genHex();
                 }
             });
         }
 
         window.toggleM = (s) => modal.style.display = s ? 'flex' : 'none';
 
-        // 背景粒子引擎
-        const cv = document.getElementById('canvas'), ctx = cv.getContext('2d');
-        let particles = [];
-        function initCV() {
-            cv.width = window.innerWidth; cv.height = window.innerHeight;
-            particles = Array.from({length: 60}, () => ({ x: Math.random()*cv.width, y: Math.random()*cv.height, z: Math.random()*cv.width }));
-        }
-        function draw() {
-            ctx.fillStyle = "rgba(5, 5, 8, 0.3)";
-            ctx.fillRect(0,0,cv.width,cv.height);
-            particles.forEach(p => {
-                let x = (p.x-cv.width/2)*(cv.width/p.z)+cv.width/2, y = (p.y-cv.height/2)*(cv.width/p.z)+cv.height/2, sz = (1-p.z/cv.width)*3;
-                ctx.fillStyle = p.z < cv.width/2 ? "#ff0055" : "#d4af37";
-                ctx.fillRect(x,y,sz,sz);
-                p.z -= 1.5; if(p.z<=0) p.z = cv.width;
-            });
-            requestAnimationFrame(draw);
-        }
-
-        window.addEventListener('resize', initCV);
-        initCV(); draw(); render();
-        setInterval(sync, 150); // 代碼流與 RTP 實時刷新
+        draw();
+        // 提高刷新頻率增加代碼流動感 (150ms)
+        setInterval(sync, 150);
     })();
 </script>
 </body>
