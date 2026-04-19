@@ -6,11 +6,11 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>ATG 監控系統 | Y董
-        
+    <title>ATG 智能監控系統 | 柔</title>
+    <style>
         :root {
             --bg: #010105;
-            --panel: rgba(10, 10, 25, 0.9);
+            --panel: rgba(10, 10, 25, 0.95);
             --gold: #d4af37;
             /* 五態科技配色固化 */
             --s1: #ff0055; /* 極度危險 */
@@ -22,10 +22,11 @@
 
         body, html {
             margin: 0; padding: 0; background: var(--bg); color: #fff;
-            font-family: 'Segoe UI', 'PingFang TC', sans-serif; overflow: hidden; height: 100%;
+            font-family: 'Segoe UI', 'PingFang TC', 'Microsoft JhengHei', sans-serif; 
+            overflow: hidden; height: 100%;
         }
 
-        /* 科技感背景網格 */
+        /* 背景網格與掃描線 */
         #grid-bg {
             position: fixed; top: 0; left: 0; width: 100%; height: 100%;
             background-image: linear-gradient(rgba(0, 255, 170, 0.03) 1px, transparent 1px),
@@ -33,10 +34,9 @@
             background-size: 30px 30px; z-index: -1;
         }
 
-        /* 掃描線效果 */
         body::before {
             content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.2) 50%);
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.25) 50%);
             background-size: 100% 4px; z-index: 10; pointer-events: none;
         }
 
@@ -47,81 +47,77 @@
         }
 
         header { text-align: center; margin-bottom: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 15px; }
-        h1 { font-size: 1.5rem; letter-spacing: 5px; color: var(--gold); margin: 0; text-shadow: 0 0 10px rgba(212, 175, 55, 0.3); }
-        .status { font-size: 0.65rem; color: #666; margin-top: 8px; letter-spacing: 2px; }
+        h1 { font-size: 1.4rem; letter-spacing: 4px; color: var(--gold); margin: 0; text-shadow: 0 0 12px rgba(212, 175, 55, 0.4); }
+        .status { font-size: 0.65rem; color: #666; margin-top: 8px; letter-spacing: 2px; font-weight: bold; }
 
         #list { flex: 1; overflow-y: auto; scrollbar-width: none; }
         #list::-webkit-scrollbar { display: none; }
 
-        /* 卡片切角設計 */
+        /* 卡片設計 */
         .card {
             background: var(--panel); border-left: 4px solid #333;
-            border-radius: 4px 12px 12px 4px; padding: 15px 20px; margin-bottom: 15px;
+            border-radius: 4px 15px 15px 4px; padding: 18px 22px; margin-bottom: 15px;
             display: flex; justify-content: space-between; align-items: center;
             position: relative; transition: 0.3s;
             clip-path: polygon(0 0, 100% 0, 100% 85%, 95% 100%, 0 100%);
         }
 
-        .info .id-text { font-size: 0.75rem; color: #555; margin-bottom: 5px; font-family: monospace; }
-        .info .tag { font-size: 0.8rem; font-weight: 900; letter-spacing: 1px; }
+        .info .id-text { font-size: 0.75rem; color: #555; margin-bottom: 4px; font-family: monospace; }
+        .info .tag { font-size: 0.85rem; font-weight: 900; letter-spacing: 1px; }
 
-        .val { font-size: 2rem; font-weight: 900; font-family: 'Consolas', monospace; }
+        .val { font-size: 2.1rem; font-weight: 900; font-family: 'Consolas', monospace; }
 
-        /* 五態樣式渲染 */
+        /* 五態辨識樣式 */
         .state-1 { border-left-color: var(--s1); box-shadow: 0 0 15px rgba(255, 0, 85, 0.1); }
-        .state-1 .val { color: var(--s1); text-shadow: 0 0 8px var(--s1); }
-        .state-1 .tag { color: var(--s1); }
+        .state-1 .val, .state-1 .tag { color: var(--s1); text-shadow: 0 0 8px var(--s1); }
 
         .state-2 { border-left-color: var(--s2); }
-        .state-2 .val { color: var(--s2); text-shadow: 0 0 8px var(--s2); }
-        .state-2 .tag { color: var(--s2); }
+        .state-2 .val, .state-2 .tag { color: var(--s2); text-shadow: 0 0 8px var(--s2); }
 
         .state-3 { border-left-color: var(--s3); }
-        .state-3 .val { color: var(--s3); text-shadow: 0 0 8px var(--s3); }
-        .state-3 .tag { color: var(--s3); }
+        .state-3 .val, .state-3 .tag { color: var(--s3); text-shadow: 0 0 8px var(--s3); }
 
         .state-4 { border-left-color: var(--s4); }
-        .state-4 .val { color: var(--s4); text-shadow: 0 0 8px var(--s4); }
-        .state-4 .tag { color: var(--s4); }
+        .state-4 .val, .state-4 .tag { color: var(--s4); text-shadow: 0 0 8px var(--s4); }
 
         .state-5 { border-left-color: var(--s5); box-shadow: 0 0 20px rgba(0, 255, 170, 0.15); }
-        .state-5 .val { color: var(--s5); text-shadow: 0 0 12px var(--s5); animation: pulse 1s infinite alternate; }
-        .state-5 .tag { color: var(--s5); }
+        .state-5 .val, .state-5 .tag { color: var(--s5); text-shadow: 0 0 15px var(--s5); animation: neon-glow 1s infinite alternate; }
 
-        @keyframes pulse { from { opacity: 0.7; } to { opacity: 1; } }
+        @keyframes neon-glow { from { opacity: 0.7; } to { opacity: 1; } }
 
-        /* 鎖定代碼流遮罩 */
+        /* 鎖定遮罩與代碼流 */
         .lock-mask {
             position: absolute; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.85); display: flex; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.9); display: flex; justify-content: center; align-items: center;
             z-index: 20; cursor: pointer; flex-direction: column;
         }
         .hex-stream {
-            position: absolute; top: 5px; font-size: 0.6rem; color: #1a1a1a;
-            white-space: nowrap; width: 100%; text-align: center; opacity: 0.5;
+            position: absolute; top: 5px; font-size: 0.6rem; color: #111;
+            white-space: nowrap; width: 100%; text-align: center; opacity: 0.4;
         }
         .lock-btn {
-            border: 1px solid var(--gold); color: var(--gold); padding: 5px 15px;
-            font-size: 0.8rem; font-weight: bold; background: rgba(0,0,0,0.5);
+            border: 1px solid var(--gold); color: var(--gold); padding: 6px 18px;
+            font-size: 0.85rem; font-weight: bold; background: rgba(0,0,0,0.6);
             letter-spacing: 2px;
         }
-        .blur-content { filter: blur(10px); opacity: 0.2; }
+        .blur-content { filter: blur(12px); opacity: 0.2; }
 
-        /* 彈窗樣式 */
+        /* 彈窗 */
         .modal {
             display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
-            background: rgba(0,0,0,0.96); z-index: 99; justify-content: center; align-items: center;
+            background: rgba(0,0,0,0.96); z-index: 100; justify-content: center; align-items: center;
         }
         .m-box { 
-            background: #050510; border: 1px solid var(--gold); width: 80%; padding: 35px 25px; 
-            border-radius: 10px; text-align: center; position: relative;
+            background: #050510; border: 1px solid var(--gold); width: 85%; max-width: 320px; padding: 40px 25px; 
+            border-radius: 4px; text-align: center; position: relative;
             clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
         }
-        .btn { display: block; padding: 15px; margin: 15px 0; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 0.9rem; }
+        .btn { display: block; padding: 15px; margin: 15px 0; border-radius: 4px; text-decoration: none; font-weight: bold; font-size: 1rem; transition: 0.3s; }
         .btn-l { background: #06C755; color: #fff; }
         .btn-i { border: 1px solid #ff0055; color: #ff0055; }
+        .btn:active { transform: scale(0.95); }
 
-        footer { text-align: center; padding: 15px; font-size: 0.6rem; color: #333; letter-spacing: 1px; border-top: 1px solid #111; }
+        footer { text-align: center; padding: 15px; font-size: 0.6rem; color: #222; letter-spacing: 1px; border-top: 1px solid #111; }
     </style>
 </head>
 <body>
@@ -131,7 +127,7 @@
 <div class="wrapper">
     <header>
         <h1>ATG 智能監控系統</h1>
-        <div class="status">加密連接通道 // 實時五態數據分析</div>
+        <div class="status">加密連線通道 // 實時五態數據分析</div>
     </header>
 
     <div id="list"></div>
@@ -141,13 +137,13 @@
 
 <div id="m" class="modal">
     <div class="m-box">
-        <h2 style="color:var(--gold); font-size: 1.2rem; margin-bottom: 10px;">權限受限</h2>
+        <h2 style="color:var(--gold); font-size: 1.3rem; margin-bottom: 10px; letter-spacing: 2px;">權限受限</h2>
         <p style="color:#666; font-size:0.75rem; line-height: 1.6;">該數據通道已由密鑰加密<br>請聯繫管理員獲取永久解碼權限</p>
         <div style="margin-top: 25px;">
-            <a href="https://reurl.cc/nlOQ5X" class="btn btn-l" target="_blank">LINE 密鑰申請</a>
-            <a href="https://www.instagram.com/agg.8989?igsh=aXI3NnExazNpYm1p&utm_source=qr" class="btn btn-i" target="_blank">IG 私訊聯繫領取</a>
+            <a href="https://reurl.cc/nlOQ5X" class="btn btn-l" target="_blank" rel="noopener noreferrer">LINE 密鑰申請</a>
+            <a href="https://www.instagram.com/agg.8989/" class="btn btn-i" target="_blank" rel="noopener noreferrer">IG 私訊聯繫領取</a>
         </div>
-        <span onclick="toggleM(false)" style="color:#333; cursor:pointer; font-size:0.7rem; display:block; margin-top:15px;">關閉監控視窗</span>
+        <span onclick="toggleM(false)" style="color:#222; cursor:pointer; font-size:0.7rem; display:block; margin-top:20px;">[ 關閉監測視窗 ]</span>
     </div>
 </div>
 
@@ -156,12 +152,12 @@
         const list = document.getElementById('list');
         const modal = document.getElementById('m');
         
-        // 固化五開五鎖房號
+        // 固化五開五鎖房號設定
         const data = [102, 115, 128, 205, 233, 301, 315, 366, 388, 400].map((id, i) => ({
-            id, rtp: (Math.random() * (94 - 60) + 60).toFixed(1), lock: i >= 5
+            id, rtp: (Math.random() * (93 - 60) + 60).toFixed(1), lock: i >= 5
         }));
 
-        // 固化五態分析邏輯
+        // 五態分析邏輯
         function getS(v) {
             const n = parseFloat(v);
             if (n < 65) return { s: 'state-1', t: '極度危險' };
@@ -172,7 +168,7 @@
         }
 
         function genHex() {
-            return Array.from({length: 40}, () => Math.floor(Math.random()*16).toString(16).toUpperCase()).join('');
+            return Array.from({length: 45}, () => Math.floor(Math.random()*16).toString(16).toUpperCase()).join('');
         }
 
         function draw() {
@@ -181,7 +177,7 @@
                 return `
                     <div class="card ${info.s}" id="card-${r.id}">
                         <div class="info ${r.lock ? 'blur-content' : ''}">
-                            <div class="id-text">監測編號: ${r.id}</div>
+                            <div class="id-text">監測編號: UNIT-${r.id}</div>
                             <div class="tag">${info.t}</div>
                         </div>
                         <div class="val ${r.lock ? 'blur-content' : ''}" id="v-${r.id}">${r.rtp}%</div>
@@ -199,20 +195,17 @@
         function sync() {
             data.forEach(r => {
                 if(!r.lock) {
-                    // 模擬真實波動
                     const drift = (Math.random() * 0.4 - 0.2);
                     r.rtp = Math.min(97.5, Math.max(55, parseFloat(r.rtp) + drift)).toFixed(1);
                     const el = document.getElementById(`v-${r.id}`);
                     const card = document.getElementById(`card-${r.id}`);
-                    if(el) {
+                    if(el && card) {
                         el.innerText = r.rtp + '%';
-                        // 實時更新顏色與狀態
                         const next = getS(r.rtp);
                         card.className = `card ${next.s}`;
                         card.querySelector('.tag').innerText = next.t;
                     }
                 } else {
-                    // 更新鎖定房號的動態代碼流
                     const hEl = document.getElementById(`h-${r.id}`);
                     if(hEl) hEl.innerText = genHex();
                 }
@@ -222,7 +215,7 @@
         window.toggleM = (s) => modal.style.display = s ? 'flex' : 'none';
 
         draw();
-        // 提高刷新頻率增加代碼流動感 (150ms)
+        // 固化更新頻率：150ms 以維持動態代碼流感
         setInterval(sync, 150);
     })();
 </script>
