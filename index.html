@@ -6,7 +6,227 @@
     <meta http-equiv="Pragma" content="no-cache">
     <meta http-equiv="Expires" content="0">
     <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>ATG 戰神賽特智能監控系統 | Y董</title><!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="Cache-Control" content="no-cache, no-store, must-revalidate">
+    <meta http-equiv="Pragma" content="no-cache">
+    <meta http-equiv="Expires" content="0">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>ATG 戰神賽特智能監控系統 | Y董</title>
+    <style>
+        :root {
+            --bg: #030308;
+            --panel: rgba(8, 8, 20, 0.9);
+            --gold: #d4af37;
+            --s1: #ff0055; /* 極度危險 */
+            --s2: #ff5e00; /* 數據低迷 */
+            --s3: #cc00ff; /* 正常波動 */
+            --s4: #00ccff; /* 數據回升 */
+            --s5: #00ffaa; /* 高度活躍 */
+        }
+
+        body, html {
+            margin: 0; padding: 0; background: var(--bg); color: #fff;
+            font-family: 'PingFang TC', 'Microsoft JhengHei', sans-serif; 
+            overflow: hidden; height: 100%;
+        }
+
+        #bg-canvas { position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; }
+
+        body::after {
+            content: ""; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: linear-gradient(rgba(18, 16, 16, 0) 50%, rgba(0, 0, 0, 0.1) 50%);
+            background-size: 100% 4px;
+            z-index: 10; pointer-events: none;
+        }
+
+        .wrapper {
+            max-width: 450px; margin: 0 auto; height: 100vh;
+            display: flex; flex-direction: column; padding: 25px 20px; box-sizing: border-box;
+            position: relative; z-index: 5;
+        }
+
+        header { 
+            text-align: center; margin-bottom: 25px; 
+            border-bottom: 1px solid rgba(212, 175, 55, 0.3); padding-bottom: 15px;
+        }
+        h1 { font-size: 1.3rem; letter-spacing: 3px; color: var(--gold); margin: 0; font-weight: 900; }
+        .status { font-size: 0.7rem; color: #fff; margin-top: 8px; opacity: 0.8; letter-spacing: 1px; }
+
+        #list { flex: 1; overflow-y: auto; scrollbar-width: none; }
+        #list::-webkit-scrollbar { display: none; }
+
+        .card {
+            background: var(--panel); 
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.05);
+            border-left: 4px solid #333;
+            margin-bottom: 15px; padding: 18px 22px;
+            display: flex; justify-content: space-between; align-items: center;
+            position: relative;
+            clip-path: polygon(0% 0%, 100% 0%, 100% 85%, 94% 100%, 0% 100%);
+        }
+
+        .info .id-text { font-size: 0.7rem; color: rgba(255,255,255,0.4); margin-bottom: 4px; }
+        .info .tag { font-size: 0.9rem; font-weight: 900; letter-spacing: 1px; }
+        .val { font-size: 2.1rem; font-weight: 900; font-family: 'Consolas', monospace; }
+
+        .state-1 { border-left-color: var(--s1); } .state-1 .val, .state-1 .tag { color: var(--s1); text-shadow: 0 0 10px var(--s1); }
+        .state-2 { border-left-color: var(--s2); } .state-2 .val, .state-2 .tag { color: var(--s2); }
+        .state-3 { border-left-color: var(--s3); } .state-3 .val, .state-3 .tag { color: var(--s3); }
+        .state-4 { border-left-color: var(--s4); } .state-4 .val, .state-4 .tag { color: var(--s4); }
+        .state-5 { border-left-color: var(--s5); } .state-5 .val, .state-5 .tag { color: var(--s5); text-shadow: 0 0 15px var(--s5); }
+
+        .lock-mask {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(5,5,10,0.95); display: flex; justify-content: center; align-items: center;
+            z-index: 20; cursor: pointer;
+        }
+        .lock-btn {
+            border: 1px solid var(--gold); color: var(--gold); padding: 8px 25px;
+            font-size: 0.85rem; font-weight: 900; letter-spacing: 2px;
+            background: rgba(0,0,0,0.5);
+        }
+        .blur-content { filter: blur(15px); opacity: 0.1; }
+
+        .modal {
+            display: none; position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            background: rgba(0,0,0,0.98); z-index: 100; justify-content: center; align-items: center;
+        }
+        .m-box { 
+            background: #050508; border: 1px solid var(--gold); width: 85%; max-width: 320px; padding: 45px 25px; 
+            text-align: center; clip-path: polygon(10% 0, 100% 0, 100% 90%, 90% 100%, 0 100%, 0 10%);
+        }
+        .btn { display: block; padding: 15px; margin: 15px 0; text-decoration: none; font-weight: 900; font-size: 1rem; border-radius: 4px; }
+        .btn-l { background: #06C755; color: #fff; }
+        .btn-i { border: 1px solid var(--s1); color: var(--s1); }
+
+        footer { text-align: center; padding: 20px; font-size: 0.65rem; color: rgba(255,255,255,0.2); letter-spacing: 1px; border-top: 1px solid rgba(255,255,255,0.05); }
+    </style>
+</head>
+<body>
+
+<canvas id="bg-canvas"></canvas>
+
+<div class="wrapper">
+    <header>
+        <h1>戰神賽特．智能監控</h1>
+        <div class="status">系統狀態：加密連線中 // 實時數據分析</div>
+    </header>
+
+    <div id="list"></div>
+
+    <footer>本系統由 Y董團隊 提供技術支援</footer>
+</div>
+
+<div id="m" class="modal">
+    <div class="m-box">
+        <h2 style="color:var(--gold); font-size: 1.2rem; margin-bottom: 15px; letter-spacing: 2px;">存取權限受限</h2>
+        <p style="color:#666; font-size:0.8rem; margin-bottom:30px; line-height:1.6;">該房號數據已加密<br>請聯繫 Y董 獲取永久解鎖密鑰</p>
+        <div style="margin-top: 10px;">
+            <a href="https://reurl.cc/nlOQ5X" class="btn btn-l" target="_blank" rel="noopener noreferrer">LINE 領取密鑰</a>
+            <a href="https://www.instagram.com/agg.8989/" class="btn btn-i" target="_blank" rel="noopener noreferrer">私訊 IG 聯繫</a>
+        </div>
+        <span onclick="toggleM(false)" style="color:#222; cursor:pointer; font-size:0.75rem; display:block; margin-top:20px;">[ 返回監控界面 ]</span>
+    </div>
+</div>
+
+<script>
+    (function() {
+        const list = document.getElementById('list');
+        const modal = document.getElementById('m');
+        const canvas = document.getElementById('bg-canvas');
+        const ctx = canvas.getContext('2d');
+        
+        // 房號 1-5000 隨機生成且不重複
+        function getRooms() {
+            let res = [];
+            while(res.length < 10) {
+                let r = Math.floor(Math.random() * 5000) + 1;
+                if(!res.includes(r)) res.push(r);
+            }
+            return res.sort((a, b) => 0.5 - Math.random());
+        }
+
+        const data = getRooms().map((id, i) => ({
+            id, rtp: (Math.random() * (94 - 61) + 61).toFixed(1), lock: i >= 5
+        }));
+
+        let particles = [];
+        function initBg() {
+            canvas.width = window.innerWidth;
+            canvas.height = window.innerHeight;
+            particles = [];
+            for(let i=0; i<50; i++) particles.push({
+                x: Math.random() * canvas.width,
+                y: Math.random() * canvas.height,
+                h: Math.random() * 80 + 20,
+                v: Math.random() * 1.5 + 0.5,
+                color: i % 2 === 0 ? '#d4af37' : '#ff0055'
+            });
+        }
+
+        function drawBg() {
+            ctx.fillStyle = 'rgba(3, 3, 8, 0.2)';
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            particles.forEach(p => {
+                ctx.beginPath(); ctx.strokeStyle = p.color; ctx.globalAlpha = 0.1;
+                ctx.moveTo(p.x, p.y); ctx.lineTo(p.x, p.y + p.h); ctx.stroke();
+                p.y -= p.v; if(p.y + p.h < 0) p.y = canvas.height;
+            });
+            requestAnimationFrame(drawBg);
+        }
+
+        function getS(v) {
+            const n = parseFloat(v);
+            if (n < 65) return { s: 'state-1', t: '極度危險' };
+            if (n < 73) return { s: 'state-2', t: '數據低迷' };
+            if (n < 81) return { s: 'state-3', t: '正常波動' };
+            if (n < 88) return { s: 'state-4', t: '數據回升' };
+            return { s: 'state-5', t: '高度活躍' };
+        }
+
+        function draw() {
+            list.innerHTML = data.map(r => {
+                const info = getS(r.rtp);
+                return `
+                    <div class="card ${info.s}" id="card-${r.id}">
+                        <div class="info ${r.lock ? 'blur-content' : ''}">
+                            <div class="id-text">監測編號：${r.id}</div>
+                            <div class="tag">${info.t}</div>
+                        </div>
+                        <div class="val ${r.lock ? 'blur-content' : ''}" id="v-${r.id}">${r.rtp}%</div>
+                        ${r.lock ? `<div class="lock-mask" onclick="toggleM(true)"><div class="lock-btn">點擊解鎖</div></div>` : ''}
+                    </div>`;
+            }).join('');
+        }
+
+        function sync() {
+            data.forEach(r => {
+                if(!r.lock) {
+                    r.rtp = Math.min(98.5, Math.max(58, parseFloat(r.rtp) + (Math.random() * 0.4 - 0.2))).toFixed(1);
+                    const el = document.getElementById(`v-${r.id}`);
+                    const card = document.getElementById(`card-${r.id}`);
+                    if(el && card) {
+                        el.innerText = r.rtp + '%';
+                        const next = getS(r.rtp);
+                        card.className = `card ${next.s}`;
+                        card.querySelector('.tag').innerText = next.t;
+                    }
+                }
+            });
+        }
+
+        window.toggleM = (s) => modal.style.display = s ? 'flex' : 'none';
+        window.addEventListener('resize', initBg);
+        initBg(); drawBg(); draw();
+        setInterval(sync, 200);
+    })();
+</script>
+</body>
+</html>
     <style>
         :root {
             --bg: #030308;
