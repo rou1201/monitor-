@@ -144,11 +144,11 @@
                 
                 html += `
                     <div class="card ${info.s}">
-                        <div class="info ${isLocked ? 'filter: blur(15px); opacity: 0.05;' : ''}">
+                        <div class="info ${isLocked ? 'style=\"filter: blur(15px); opacity: 0.05;\"' : ''}">
                             <div class="id-text">監測編號：${id}</div>
                             <div class="tag">${info.t}</div>
                         </div>
-                        <div class="val ${isLocked ? 'filter: blur(15px); opacity: 0.05;' : ''}">${rtp}%</div>
+                        <div class="val ${isLocked ? 'style=\"filter: blur(15px); opacity: 0.05;\"' : ''}">${rtp}%</div>
                         ${isLocked ? `<div class="lock-mask" onclick="toggleM(true)"><div class="lock-btn">點擊解鎖</div></div>` : ''}
                     </div>`;
             }
@@ -176,7 +176,8 @@
         window.addEventListener('resize', initBg);
         
         initBg(); drawBg(); refreshList();
-        setInterval(refreshList, 400);
+        // 設定每 0.5 秒重新刷新列表
+        setInterval(refreshList, 500);
     })();
 </script>
 </body>
